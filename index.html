@@ -251,6 +251,16 @@ footer{padding:40px 20px 60px;text-align:center;font-size:13px;color:var(--sage)
 }
 </style>
 </head>
+<script>
+/* بيدوّر على الصور بأكثر من مسار، عشان يشتغل مهما كان ترتيب المجلدات */
+function adFallback(el){
+  var name=el.src.split('/').pop();
+  var tries=['ads/'+name,name];
+  var i=parseInt(el.dataset.t||'0',10);
+  if(i<tries.length){el.dataset.t=i+1;el.src=tries[i];}
+  else{el.onerror=null;}
+}
+</script>
 <body class="locked">
 
 <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
@@ -365,7 +375,7 @@ footer{padding:40px 20px 60px;text-align:center;font-size:13px;color:var(--sage)
 <div class="adpop" id="adPop">
   <div class="ad-inner">
     <button class="ad-x" id="adX" aria-label="سكّري">✕</button>
-    <img src="images/images.jpeg" alt="" onerror="this.onerror=null;this.src='images.jpeg'">
+    <img src="images/images.jpeg" alt="" onerror="adFallback(this)">
   </div>
 </div>
 
@@ -504,7 +514,7 @@ function spawnAd(){
   d.style.transform='rotate('+((Math.random()-.5)*14).toFixed(1)+'deg)';
   d.style.zIndex=++adZ;
   const img=AD_IMGS[Math.floor(Math.random()*AD_IMGS.length)];
-  d.innerHTML='<button class="storm-x">✕</button><img src="'+img+'" alt="" onerror="this.onerror=null;this.src=this.src.split(\'/\').pop()">';
+  d.innerHTML='<button class="storm-x">✕</button><img src="'+img+'" alt="" onerror="adFallback(this)">';
   d.querySelector('.storm-x').addEventListener('click',()=>{
     d.remove();alive--;
     spawnAd();spawnAd();
