@@ -255,7 +255,7 @@ footer{padding:40px 20px 60px;text-align:center;font-size:13px;color:var(--sage)
 /* بيدوّر على الصور بأكثر من مسار، عشان يشتغل مهما كان ترتيب المجلدات */
 function picFallback(el){
   var name=el.src.split('/').pop();
-  var tries=['pics/'+name,name];
+  var tries=['images/pics/'+name,'images/'+name,'pics/'+name];
   var i=parseInt(el.dataset.t||'0',10);
   if(i<tries.length){el.dataset.t=i+1;el.src=tries[i];}
   else{el.onerror=null;}
@@ -375,7 +375,7 @@ function picFallback(el){
 <div class="popbox" id="giftPop">
   <div class="popbox-inner">
     <button class="popbox-x" id="popX" aria-label="سكّري">✕</button>
-    <img src="images/images.jpeg" alt="" onerror="picFallback(this)">
+    <img src="images.jpeg" alt="" onerror="picFallback(this)">
   </div>
 </div>
 
@@ -496,8 +496,8 @@ document.getElementById('popX').addEventListener('click',()=>{
 });
 
 /* ---------- عاصفة الإعلانات ---------- */
-const PIC_IMGS=['images/pics/p1.jpg','images/pics/p2.jpg','images/pics/p3.jpg','images/pics/p4.jpg','images/pics/p5.jpg','images/pics/p6.jpg','images/pics/p7.jpg'];
-PIC_IMGS.forEach(s=>{const i=new Image();i.src=s;});
+const PIC_IMGS=['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg','p6.jpg','p7.jpg'];
+PIC_IMGS.concat(['images.jpeg']).forEach(s=>{const i=new Image();i.src=s;});
 const stormEl=document.getElementById('pileLayer');
 const MAX_ALIVE=110;
 let alive=0, stormOn=false, stormTimer=null, pileZ=0;
