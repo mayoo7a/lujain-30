@@ -218,25 +218,25 @@ h2 em{font-style:normal;color:var(--mint)}
 footer{padding:40px 20px 60px;text-align:center;font-size:13px;color:var(--sage);opacity:.55;position:relative;z-index:10;font-weight:300}
 
 /* ---------- pop-up ad ---------- */
-.adpop{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:22px;
+.popbox{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:22px;
   background:rgba(3,20,14,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
   opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s}
-.adpop.show{opacity:1;visibility:visible}
-.ad-inner{position:relative;max-width:min(276px,60vw)}
-.ad-inner img{display:block;width:100%;border-radius:14px;
+.popbox.show{opacity:1;visibility:visible}
+.popbox-inner{position:relative;width:min(276px,60vw)}
+.popbox-inner img{display:block;width:100%;border-radius:14px;
   box-shadow:0 30px 70px rgba(0,0,0,.6);border:2px solid #fff}
-.ad-x{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;
+.popbox-x{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;
   border:2px solid #fff;background:#fff;color:#111;font-size:16px;font-weight:700;
   cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.5);z-index:2}
-@media(max-width:520px){.ad-x{top:-12px;right:-10px;width:30px;height:30px;font-size:14px}}
+@media(max-width:520px){.popbox-x{top:-12px;right:-10px;width:30px;height:30px;font-size:14px}}
 
 /* ---------- عاصفة الإعلانات ---------- */
-#adStorm{position:fixed;inset:0;z-index:290;pointer-events:none;overflow:hidden}
-.storm-ad{position:absolute;pointer-events:auto;animation:popIn .3s cubic-bezier(.2,1.5,.4,1.1)}
+#pileLayer{position:fixed;inset:0;z-index:290;pointer-events:none;overflow:hidden}
+.pile-item{position:absolute;pointer-events:auto;animation:popIn .3s cubic-bezier(.2,1.5,.4,1.1)}
 @keyframes popIn{from{transform:scale(.4);opacity:0}}
-.storm-ad img{display:block;width:100%;border-radius:10px;border:2px solid #fff;
+.pile-item img{display:block;width:100%;border-radius:10px;border:2px solid #fff;
   box-shadow:0 18px 40px rgba(0,0,0,.6)}
-.storm-x{position:absolute;top:-11px;right:-11px;width:28px;height:28px;border-radius:50%;
+.pile-x{position:absolute;top:-11px;right:-11px;width:28px;height:28px;border-radius:50%;
   border:2px solid #fff;background:#fff;color:#111;font-size:14px;font-weight:700;
   cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 14px rgba(0,0,0,.5);z-index:2;line-height:1}
 
@@ -253,9 +253,9 @@ footer{padding:40px 20px 60px;text-align:center;font-size:13px;color:var(--sage)
 </head>
 <script>
 /* بيدوّر على الصور بأكثر من مسار، عشان يشتغل مهما كان ترتيب المجلدات */
-function adFallback(el){
+function picFallback(el){
   var name=el.src.split('/').pop();
-  var tries=['ads/'+name,name];
+  var tries=['pics/'+name,name];
   var i=parseInt(el.dataset.t||'0',10);
   if(i<tries.length){el.dataset.t=i+1;el.src=tries[i];}
   else{el.onerror=null;}
@@ -369,13 +369,13 @@ function adFallback(el){
   </div>
 </div>
 
-<div id="adStorm"></div>
+<div id="pileLayer"></div>
 
 <!-- الإعلان المنبثق بعد أول هدية -->
-<div class="adpop" id="adPop">
-  <div class="ad-inner">
-    <button class="ad-x" id="adX" aria-label="سكّري">✕</button>
-    <img src="images/images.jpeg" alt="" onerror="adFallback(this)">
+<div class="popbox" id="giftPop">
+  <div class="popbox-inner">
+    <button class="popbox-x" id="popX" aria-label="سكّري">✕</button>
+    <img src="images/images.jpeg" alt="" onerror="picFallback(this)">
   </div>
 </div>
 
@@ -488,44 +488,44 @@ document.getElementById('tapBtn').addEventListener('click',()=>blowOut(30));
 /* ---------- الهدايا ---------- */
 const AR=['١','٢','٣','٤','٥','٦','٧'];
 const row=document.getElementById('giftRow');
-let adShown=false;
-const adPop=document.getElementById('adPop');
-document.getElementById('adX').addEventListener('click',()=>{
-  adPop.classList.remove('show');
+let popShown=false;
+const giftPop=document.getElementById('giftPop');
+document.getElementById('popX').addEventListener('click',()=>{
+  giftPop.classList.remove('show');
   startStorm();
 });
 
 /* ---------- عاصفة الإعلانات ---------- */
-const AD_IMGS=['images/ads/ad1.jpg','images/ads/ad2.jpg','images/ads/ad3.jpg','images/ads/ad4.jpg','images/ads/ad5.jpg','images/ads/ad6.jpg','images/ads/ad7.jpg'];
-AD_IMGS.forEach(s=>{const i=new Image();i.src=s;});
-const stormEl=document.getElementById('adStorm');
+const PIC_IMGS=['images/pics/p1.jpg','images/pics/p2.jpg','images/pics/p3.jpg','images/pics/p4.jpg','images/pics/p5.jpg','images/pics/p6.jpg','images/pics/p7.jpg'];
+PIC_IMGS.forEach(s=>{const i=new Image();i.src=s;});
+const stormEl=document.getElementById('pileLayer');
 const MAX_ALIVE=110;
-let alive=0, stormOn=false, stormTimer=null, adZ=0;
+let alive=0, stormOn=false, stormTimer=null, pileZ=0;
 
-function spawnAd(){
+function spawnPile(){
   if(alive>=MAX_ALIVE)return;
   alive++;
   const w=Math.round(110+Math.random()*140);
   const d=document.createElement('div');
-  d.className='storm-ad';
+  d.className='pile-item';
   d.style.width=w+'px';
   d.style.left=Math.round(Math.random()*Math.max(6,innerWidth-w*0.55))-Math.round(w*0.15)+'px';
   d.style.top=Math.round(Math.random()*Math.max(6,innerHeight-w*0.5))-Math.round(w*0.1)+'px';
   d.style.transform='rotate('+((Math.random()-.5)*14).toFixed(1)+'deg)';
-  d.style.zIndex=++adZ;
-  const img=AD_IMGS[Math.floor(Math.random()*AD_IMGS.length)];
-  d.innerHTML='<button class="storm-x">✕</button><img src="'+img+'" alt="" onerror="adFallback(this)">';
-  d.querySelector('.storm-x').addEventListener('click',()=>{
+  d.style.zIndex=++pileZ;
+  const img=PIC_IMGS[Math.floor(Math.random()*PIC_IMGS.length)];
+  d.innerHTML='<button class="pile-x">✕</button><img src="'+img+'" alt="" onerror="picFallback(this)">';
+  d.querySelector('.pile-x').addEventListener('click',()=>{
     d.remove();alive--;
-    spawnAd();spawnAd();
+    spawnPile();spawnPile();
   });
   stormEl.appendChild(d);
 }
 function startStorm(){
   if(stormOn)return;stormOn=true;
   document.body.classList.add('locked');
-  for(let i=0;i<16;i++)setTimeout(spawnAd,i*90);
-  stormTimer=setInterval(spawnAd,420);
+  for(let i=0;i<16;i++)setTimeout(spawnPile,i*90);
+  stormTimer=setInterval(spawnPile,420);
 }
 GIFTS.forEach((g,i)=>{
   const d=document.createElement('div');
@@ -535,9 +535,9 @@ GIFTS.forEach((g,i)=>{
     if(d.classList.contains('open'))return;
     d.classList.add('open');
     setTimeout(()=>openCard(g),380);
-    if(!adShown){
-      adShown=true;
-      setTimeout(()=>adPop.classList.add('show'),380+1000);
+    if(!popShown){
+      popShown=true;
+      setTimeout(()=>giftPop.classList.add('show'),380+1000);
     }
     const r=d.getBoundingClientRect();
     confetti.burst(60,r.left+r.width/2,r.top+r.height/3);
